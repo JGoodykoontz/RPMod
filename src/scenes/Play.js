@@ -102,8 +102,8 @@ class Play extends Phaser.Scene {
             this.scene.start('menu');
         }
 
-        if(this.checkCollision(this.p2Rocket, this.ship01)
-         || this.checkCollision(this.p1Rocket, this.ship01)) {
+        if(this.RtoLcheckCollision(this.p2Rocket, this.ship01)
+         || this.RtoLcheckCollision(this.p1Rocket, this.ship01)) {
             this.shipExplode(this.ship01);
             if(this.p2Rocket.isFiring) {
                 this.p2Rocket.reset();
@@ -111,8 +111,8 @@ class Play extends Phaser.Scene {
                 this.p1Rocket.reset();
             }
         }
-        if(this.checkCollision(this.p2Rocket, this.ship02)
-         || this.checkCollision(this.p1Rocket, this.ship02)) {
+        if(this.RtoLcheckCollision(this.p2Rocket, this.ship02)
+         || this.RtoLcheckCollision(this.p1Rocket, this.ship02)) {
             this.shipExplode(this.ship02);
             if(this.p2Rocket.isFiring) {
                 this.p2Rocket.reset();
@@ -120,8 +120,8 @@ class Play extends Phaser.Scene {
                 this.p1Rocket.reset();
             }
         }
-        if(this.checkCollision(this.p2Rocket, this.ship03)
-         || this.checkCollision(this.p1Rocket, this.ship03)) {
+        if(this.RtoLcheckCollision(this.p2Rocket, this.ship03)
+         || this.RtoLcheckCollision(this.p1Rocket, this.ship03)) {
             this.shipExplode(this.ship03);
             if(this.p2Rocket.isFiring) {
                 this.p2Rocket.reset();
@@ -129,8 +129,8 @@ class Play extends Phaser.Scene {
                 this.p1Rocket.reset();
             }
         }
-        if(this.checkCollision(this.p2Rocket, this.ship04)
-         || this.checkCollision(this.p1Rocket, this.ship04)) {
+        if(this.LtoRcheckCollision(this.p2Rocket, this.ship04)
+         || this.LtoRcheckCollision(this.p1Rocket, this.ship04)) {
             this.shipExplode(this.ship04);
             if(this.p2Rocket.isFiring) {
                 this.p2Rocket.reset();
@@ -138,8 +138,8 @@ class Play extends Phaser.Scene {
                 this.p1Rocket.reset();
             }
         }
-        if(this.checkCollision(this.p2Rocket, this.ship05) 
-        || this.checkCollision(this.p1Rocket, this.ship05)) {
+        if(this.LtoRcheckCollision(this.p2Rocket, this.ship05) 
+        || this.LtoRcheckCollision(this.p1Rocket, this.ship05)) {
             this.shipExplode(this.ship05);
             if(this.p2Rocket.isFiring) {
                 this.p2Rocket.reset();
@@ -147,8 +147,8 @@ class Play extends Phaser.Scene {
                 this.p1Rocket.reset();
             }
         }
-        if(this.checkCollision(this.p2Rocket, this.ship06)
-         || this.checkCollision(this.p1Rocket, this.ship06)) {
+        if(this.LtoRcheckCollision(this.p2Rocket, this.ship06)
+         || this.LtoRcheckCollision(this.p1Rocket, this.ship06)) {
             this.shipExplode(this.ship06);
             if(this.p2Rocket.isFiring) {
                 this.p2Rocket.reset();
@@ -218,12 +218,36 @@ class Play extends Phaser.Scene {
         }
     }
 
-    checkCollision(rocket, ship) {
+    RtoLcheckCollision(rocket, ship) {
         if(rocket.x < ship.x + ship.width && 
             rocket.x + rocket.width > ship.x && 
             rocket.y < ship.y + ship.height && 
             rocket.height + rocket.y > ship.y) {
-                
+                if(rocket === this.p2Rocket) {
+                    this.p2Score += ship.point;
+                    this.scoreRight.text = this.p2Score;
+                } else {
+                    this.p1Score += ship.point;
+                    this.scoreLeft.text = this.p1Score;
+                }
+                return true;
+        } else {
+            return false;
+        }
+    }
+
+    LtoRcheckCollision(rocket, ship) {
+        if(rocket.x > ship.x - ship.width && 
+            rocket.x + rocket.width < ship.x && 
+            rocket.y < ship.y + ship.height && 
+            rocket.height + rocket.y > ship.y) {
+                if(rocket === this.p2Rocket) {
+                    this.p2Score += ship.point;
+                    this.scoreRight.text = this.p2Score;
+                } else {
+                    this.p1Score += ship.point;
+                    this.scoreLeft.text = this.p1Score;
+                }
                 return true;
         } else {
             return false;
