@@ -19,7 +19,8 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
         this.add.rectangle(config.width-borderUISize, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
 
-        this.p1Rocket = new Rocket(this, config.width/2, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p1Rocket = new RocketP1(this, config.width/2, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p2Rocket = new RocketP2(this, config.width/2, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
 
         this.ship01 = new Spaceship(this, config.width + borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(0, 0);
         this.ship02 = new Spaceship(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(0, 0);
@@ -74,6 +75,7 @@ class Play extends Phaser.Scene {
         this.starfield.tilePositionX -= 4;
         if(!this.gameOver) {
             this.p1Rocket.update();
+            this.p2Rocket.update();
             this.ship01.update();
             this.ship02.update();
             this.ship03.update();
@@ -84,6 +86,19 @@ class Play extends Phaser.Scene {
         }
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start('menu');
+        }
+
+        if(this.checkCollision(this.p2Rocket, this.ship01)) {
+            this.shipExplode(this.ship01);
+            this.p2Rocket.reset();
+        }
+        if(this.checkCollision(this.p2Rocket, this.ship02)) {
+            this.shipExplode(this.ship02);
+            this.p2Rocket.reset();
+        }
+        if(this.checkCollision(this.p2Rocket, this.ship03)) {
+            this.shipExplode(this.ship03);
+            this.p2Rocket.reset();
         }
 
         if(this.checkCollision(this.p1Rocket, this.ship01)) {
