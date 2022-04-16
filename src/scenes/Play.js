@@ -25,10 +25,19 @@ class Play extends Phaser.Scene {
         this.ship02 = new Spaceship(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(0, 0);
         this.ship03 = new Spaceship(this, config.width, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(0, 0);
 
-        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        //Player 1 controls
+        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+        //Player 2 controls
+        keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
+        //Game Controls
+        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         
         this.anims.create({
             key: 'explode',
@@ -70,10 +79,10 @@ class Play extends Phaser.Scene {
             this.ship03.update();
         }
 
-        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.scene.restart();
         }
-        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyESC)) {
             this.scene.start('menu');
         }
 
