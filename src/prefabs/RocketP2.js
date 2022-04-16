@@ -11,7 +11,7 @@ class RocketP2 extends Phaser.GameObjects.Sprite {
 
     update() {
         if(!this.isFiring) {
-            if(keyLEFT.isDown && this.x >= borderUISize + this.width) {
+            if(keyLEFT.isDown && this.x >= config.width/2 + this.width) {
                 this.x -= this.moveSpeed;
             } else if(keyRIGHT.isDown && this.x <= config.width - borderUISize - this.width) {
                 this.x += this.moveSpeed;

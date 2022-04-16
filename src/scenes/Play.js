@@ -19,8 +19,8 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
         this.add.rectangle(config.width-borderUISize, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
 
-        this.p1Rocket = new RocketP1(this, config.width/2, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
-        this.p2Rocket = new RocketP2(this, config.width/2, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p1Rocket = new RocketP1(this, config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p2Rocket = new RocketP2(this, 3*config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
 
         this.ship01 = new Spaceship(this, config.width + borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(0, 0);
         this.ship02 = new Spaceship(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(0, 0);
