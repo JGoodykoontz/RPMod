@@ -19,16 +19,19 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
         this.add.rectangle(config.width-borderUISize, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
 
-        this.p1Rocket = new RocketP1(this, config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
-        this.p2Rocket = new RocketP2(this, 3*config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p1Rocket = new Rocket(this, config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p2Rocket = new Rocket(this, 3*config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
 
-        this.ship01 = new SpaceshipRtoL(this, config.width + borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new SpaceshipRtoL(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(0, 0);
-        this.ship03 = new SpaceshipRtoL(this, config.width, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(0, 0);
+        this.ship01 = new Spaceship(this, config.width + borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(0, 0);
+        this.ship02 = new Spaceship(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(0, 0);
+        this.ship03 = new Spaceship(this, config.width, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(0, 0);
 
-        this.ship04 = new SpaceshipLtoR(this, 0 - borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(1, 0);
-        this.ship05 = new SpaceshipLtoR(this, 0 - borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(1, 0);
-        this.ship06 = new SpaceshipLtoR(this, 0, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(1, 0);
+        this.ship04 = new Spaceship(this, 0 - borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(1, 0);
+        this.ship05 = new Spaceship(this, 0 - borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(1, 0);
+        this.ship06 = new Spaceship(this, 0, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(1, 0);
+        this.ship04.dir = 'LtoR';
+        this.ship05.dir = 'LtoR';
+        this.ship06.dir = 'LtoR';
 
         //Player 1 controls
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -81,14 +84,15 @@ class Play extends Phaser.Scene {
     update() {
         this.starfield.tilePositionX -= 2;
         if(!this.gameOver) {
-            this.p1Rocket.update();
-            this.p2Rocket.update();
-            this.ship01.update();
-            this.ship02.update();
-            this.ship03.update();
-            this.ship04.update();
-            this.ship05.update();
-            this.ship06.update();
+            this.p1_update();
+            this.p2_update();
+            this.shipRtoL_update(this.ship01);
+            this.shipRtoL_update(this.ship02);
+            this.shipRtoL_update(this.ship03);
+            this.shipLtoR_update(this.ship04);
+            this.shipLtoR_update(this.ship05);
+            this.shipLtoR_update(this.ship06);
+            
         }
 
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
@@ -98,30 +102,119 @@ class Play extends Phaser.Scene {
             this.scene.start('menu');
         }
 
-        if(this.checkCollision(this.p2Rocket, this.ship01)) {
+        if(this.checkCollision(this.p2Rocket, this.ship01)
+         || this.checkCollision(this.p1Rocket, this.ship01)) {
             this.shipExplode(this.ship01);
-            this.p2Rocket.reset();
+            if(this.p2Rocket.isFiring) {
+                this.p2Rocket.reset();
+            } else {
+                this.p1Rocket.reset();
+            }
         }
-        if(this.checkCollision(this.p2Rocket, this.ship02)) {
+        if(this.checkCollision(this.p2Rocket, this.ship02)
+         || this.checkCollision(this.p1Rocket, this.ship02)) {
             this.shipExplode(this.ship02);
-            this.p2Rocket.reset();
+            if(this.p2Rocket.isFiring) {
+                this.p2Rocket.reset();
+            } else {
+                this.p1Rocket.reset();
+            }
         }
-        if(this.checkCollision(this.p2Rocket, this.ship03)) {
+        if(this.checkCollision(this.p2Rocket, this.ship03)
+         || this.checkCollision(this.p1Rocket, this.ship03)) {
             this.shipExplode(this.ship03);
-            this.p2Rocket.reset();
+            if(this.p2Rocket.isFiring) {
+                this.p2Rocket.reset();
+            } else {
+                this.p1Rocket.reset();
+            }
         }
-
-        if(this.checkCollision(this.p1Rocket, this.ship04)) {
+        if(this.checkCollision(this.p2Rocket, this.ship04)
+         || this.checkCollision(this.p1Rocket, this.ship04)) {
             this.shipExplode(this.ship04);
-            this.p1Rocket.reset();
+            if(this.p2Rocket.isFiring) {
+                this.p2Rocket.reset();
+            } else {
+                this.p1Rocket.reset();
+            }
         }
-        if(this.checkCollision(this.p1Rocket, this.ship05)) {
+        if(this.checkCollision(this.p2Rocket, this.ship05) 
+        || this.checkCollision(this.p1Rocket, this.ship05)) {
             this.shipExplode(this.ship05);
-            this.p1Rocket.reset();
+            if(this.p2Rocket.isFiring) {
+                this.p2Rocket.reset();
+            } else {
+                this.p1Rocket.reset();
+            }
         }
-        if(this.checkCollision(this.p1Rocket, this.ship06)) {
+        if(this.checkCollision(this.p2Rocket, this.ship06)
+         || this.checkCollision(this.p1Rocket, this.ship06)) {
             this.shipExplode(this.ship06);
-            this.p1Rocket.reset();
+            if(this.p2Rocket.isFiring) {
+                this.p2Rocket.reset();
+            } else {
+                this.p1Rocket.reset();
+            }
+        }
+    }
+
+    p1_update() {
+        if(!this.p1Rocket.isFiring) {
+            if(keyA.isDown && this.p1Rocket.x >= borderUISize + this.p1Rocket.width) {
+                this.p1Rocket.x -= this.p1Rocket.moveSpeed;
+            } else if(keyD.isDown && this.p1Rocket.x <= config.width/2 - this.p1Rocket.width) {
+                this.p1Rocket.x += this.p1Rocket.moveSpeed;
+            }
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyW)) {
+            if(this.p1Rocket.isFiring === false){
+                this.p1Rocket.sfxRocket.play();
+            }
+            this.p1Rocket.isFiring = true;
+        }
+        if(this.p1Rocket.isFiring && this.p1Rocket.y >= borderUISize * 3 + borderPadding) {
+            this.p1Rocket.y -= this.p1Rocket.moveSpeed;
+        }
+        if(this.p1Rocket.y <= borderUISize * 3 + borderPadding) {
+            this.p1Rocket.isFiring = false;
+            this.p1Rocket.y = config.height - borderUISize - borderPadding;
+        }
+    }
+
+    p2_update() {
+        if(!this.p2Rocket.isFiring) {
+            if(keyLEFT.isDown && this.p2Rocket.x >= config.width/2 + this.p2Rocket.width) {
+                this.p2Rocket.x -= this.p2Rocket.moveSpeed;
+            } else if(keyRIGHT.isDown && this.p2Rocket.x <= config.width - borderUISize - this.p2Rocket.width) {
+                this.p2Rocket.x += this.p2Rocket.moveSpeed;
+            }
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyUP)) {
+            if(this.p2Rocket.isFiring === false){
+                this.p2Rocket.sfxRocket.play();
+            }
+            this.p2Rocket.isFiring = true;
+        }
+        if(this.p2Rocket.isFiring && this.p2Rocket.y >= borderUISize * 3 + borderPadding) {
+            this.p2Rocket.y -= this.p2Rocket.moveSpeed;
+        }
+        if(this.p2Rocket.y <= borderUISize * 3 + borderPadding) {
+            this.p2Rocket.isFiring = false;
+            this.p2Rocket.y = config.height - borderUISize - borderPadding;
+        }
+    }
+
+    shipLtoR_update(ship) {
+        ship.x += ship.moveSpeed;
+        if(ship.x >= config.width + ship.width) {
+            ship.x = 0;
+        }
+    }
+
+    shipRtoL_update(ship) {
+        ship.x -= ship.moveSpeed;
+        if(ship.x <= 0 - ship.width) {
+            ship.x = config.width;
         }
     }
 
@@ -130,6 +223,7 @@ class Play extends Phaser.Scene {
             rocket.x + rocket.width > ship.x && 
             rocket.y < ship.y + ship.height && 
             rocket.height + rocket.y > ship.y) {
+                
                 return true;
         } else {
             return false;
@@ -145,15 +239,7 @@ class Play extends Phaser.Scene {
             ship.alpha = 1;
             boom.destroy();
         });
-        
-        if(ship instanceof SpaceshipLtoR) {
-            this.p1Score += ship.point;
-            this.scoreLeft.text = this.p1Score;
-        } else {
-            this.p2Score += ship.point;
-            this.scoreRight.text = this.p2Score;
-        }
-
+    
         this.sound.play('sfx_explosion');
     }
 }
