@@ -51,6 +51,7 @@ class Play extends Phaser.Scene {
         })
 
         this.p1Score = 0;
+        this.p2Score = 0;
         let scoreConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
@@ -64,6 +65,8 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.p1Score, scoreConfig);
+        scoreConfig.align = 'left';
+        this.scoreRight = this.add.text(config.width - borderUISize - borderPadding - scoreConfig.fixedWidth, borderUISize + borderPadding * 2, this.p2Score, scoreConfig);
 
         this.gameOver = false;
 
@@ -143,8 +146,13 @@ class Play extends Phaser.Scene {
             boom.destroy();
         });
         
-        this.p1Score += ship.point;
-        this.scoreLeft.text = this.p1Score;
+        if(ship instanceof SpaceshipLtoR) {
+            this.p1Score += ship.point;
+            this.scoreLeft.text = this.p1Score;
+        } else {
+            this.p2Score += ship.point;
+            this.scoreRight.text = this.p2Score;
+        }
 
         this.sound.play('sfx_explosion');
     }
