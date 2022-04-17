@@ -17,29 +17,19 @@ class Play extends Phaser.Scene {
         this.background2 = this.add.tileSprite(0, 0, 640, 480, 'background2').setOrigin(0,0);
         this.background3 = this.add.tileSprite(0, 0, 640, 480, 'background3').setOrigin(0,0);
         this.background4 = this.add.tileSprite(0, 0, 640, 480, 'background4').setOrigin(0,0);
-        //this.add.text(320, 240, "play scene").setOrigin(0.5, 0.5);
 
-        this.add.rectangle(0, borderUISize + borderPadding, config.width, borderUISize * 2, 0x00ff00).setOrigin(0,0);
+        this.add.rectangle(0, borderUISize + borderPadding, config.width, borderUISize * 2, 0x41260e).setOrigin(0,0);
 
-        //this.add.rectangle(0, 0, config.width, borderUISize, 0xffffff).setOrigin(0,0);
-        //this.add.rectangle(0, config.height-borderUISize, config.width, borderUISize, 0xffffff).setOrigin(0,0);
-        //this.add.rectangle(0, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
-        //this.add.rectangle(config.width-borderUISize, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
-        //this.add.rectangle(config.width/2, 0, borderPadding, config.height, 0xffffff).setOrigin(0.5, 0);
+        this.p1Harpoon = new Harpoon(this, config.width/4, config.height - borderUISize - borderPadding, 'harpoon').setOrigin(0.5, 0);
+        this.p2Harpoon = new Harpoon(this, 3*config.width/4, config.height - borderUISize - borderPadding, 'harpoon').setOrigin(0.5, 0);
 
-        this.p1Rocket = new Rocket(this, config.width/4, config.height - borderUISize - borderPadding, 'harpoon').setOrigin(0.5, 0);
-        this.p2Rocket = new Rocket(this, 3*config.width/4, config.height - borderUISize - borderPadding, 'harpoon').setOrigin(0.5, 0);
+        this.fish01 = new FishRtoL(this, config.width + borderUISize * 6, borderUISize * 4, 'fish', 0, 30).setOrigin(0, 0);
+        this.fish02 = new FishRtoL(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'fish', 0, 20).setOrigin(0, 0);
+        this.fish03 = new FishRtoL(this, config.width, borderUISize * 6 + borderPadding * 4, 'fish', 0, 10).setOrigin(0, 0);
 
-        this.ship01 = new Spaceship(this, config.width + borderUISize * 6, borderUISize * 4, 'fish', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Spaceship(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'fish', 0, 20).setOrigin(0, 0);
-        this.ship03 = new Spaceship(this, config.width, borderUISize * 6 + borderPadding * 4, 'fish', 0, 10).setOrigin(0, 0);
-
-        this.ship04 = new Spaceship(this, 0 - borderUISize * 6, borderUISize * 4, 'fish2', 0, 30).setOrigin(1, 0);
-        this.ship05 = new Spaceship(this, 0 - borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'fish2', 0, 20).setOrigin(1, 0);
-        this.ship06 = new Spaceship(this, 0, borderUISize * 6 + borderPadding * 4, 'fish2', 0, 10).setOrigin(1, 0);
-        this.ship04.dir = 'LtoR';
-        this.ship05.dir = 'LtoR';
-        this.ship06.dir = 'LtoR';
+        this.fish04 = new FishLtoR(this, 0 - borderUISize * 6, borderUISize * 4, 'fish2', 0, 30).setOrigin(1, 0);
+        this.fish05 = new FishLtoR(this, 0 - borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'fish2', 0, 20).setOrigin(1, 0);
+        this.fish06 = new FishLtoR(this, 0, borderUISize * 6 + borderPadding * 4, 'fish2', 0, 10).setOrigin(1, 0);
 
         //Player 1 controls
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -66,8 +56,8 @@ class Play extends Phaser.Scene {
         let scoreConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            backgroundColor: '#41260e',
+            color: '#1ffce9',
             align: 'right',
             padding: {
                 top: 5,
@@ -83,8 +73,14 @@ class Play extends Phaser.Scene {
 
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(config.width/2, config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(config.width/2, config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+            if(this.p1Score > this.p2Score){
+            this.add.text(config.width/2, config.height/2, 'Player 1 Wins!', scoreConfig).setOrigin(0.5);
+            } else if(this.p2Score > this.p1Score){
+                this.add.text(config.width/2, config.height/2, 'Player 2 Wins!', scoreConfig).setOrigin(0.5);
+            } else {
+                this.add.text(config.width/2, config.height/2, 'Draw!', scoreConfig).setOrigin(0.5);
+            }
+            this.add.text(config.width/2, config.height/2 + 64, 'Space to Restart\n\t\tESC for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
     }
@@ -96,12 +92,12 @@ class Play extends Phaser.Scene {
         if(!this.gameOver) {
             this.p1_update();
             this.p2_update();
-            this.shipRtoL_update(this.ship01);
-            this.shipRtoL_update(this.ship02);
-            this.shipRtoL_update(this.ship03);
-            this.shipLtoR_update(this.ship04);
-            this.shipLtoR_update(this.ship05);
-            this.shipLtoR_update(this.ship06);
+            this.fish01.update();
+            this.fish02.update();
+            this.fish03.update();
+            this.fish04.update();
+            this.fish05.update();
+            this.fish06.update();
             
         }
 
@@ -112,152 +108,91 @@ class Play extends Phaser.Scene {
             this.scene.start('menu');
         }
 
-        if(this.RtoLcheckCollision(this.p2Rocket, this.ship01)
-         || this.RtoLcheckCollision(this.p1Rocket, this.ship01)) {
-            this.shipExplode(this.ship01);
-            if(this.p2Rocket.y >= this.ship01.y) {
-                this.p2Rocket.reset();
-            } else {
-                this.p1Rocket.reset();
-            }
+        if(this.checkCollision(this.p2Harpoon, this.fish01)
+         || this.checkCollision(this.p1Harpoon, this.fish01)) {
+            this.shipExplode(this.fish01);
         }
-        if(this.RtoLcheckCollision(this.p2Rocket, this.ship02)
-         || this.RtoLcheckCollision(this.p1Rocket, this.ship02)) {
-            this.shipExplode(this.ship02);
-            if(this.p2Rocket.y >= this.ship02.y) {
-                this.p2Rocket.reset();
-            } else {
-                this.p1Rocket.reset();
-            }
+        if(this.checkCollision(this.p2Harpoon, this.fish06)
+         || this.checkCollision(this.p1Harpoon, this.fish06)) {
+            this.shipExplode(this.fish06);
         }
-        if(this.RtoLcheckCollision(this.p2Rocket, this.ship03)
-         || this.RtoLcheckCollision(this.p1Rocket, this.ship03)) {
-            this.shipExplode(this.ship03);
-            if(this.p2Rocket.y >= this.ship03.y) {
-                this.p2Rocket.reset();
-            } else {
-                this.p1Rocket.reset();
-            }
+        if(this.checkCollision(this.p2Harpoon, this.fish02)
+         || this.checkCollision(this.p1Harpoon, this.fish02)) {
+            this.shipExplode(this.fish02);
         }
-        if(this.LtoRcheckCollision(this.p2Rocket, this.ship04)
-         || this.LtoRcheckCollision(this.p1Rocket, this.ship04)) {
-            this.shipExplode(this.ship04);
-            if(this.p2Rocket.y >= this.ship04.y) {
-                this.p2Rocket.reset();
-            } else {
-                this.p1Rocket.reset();
-            }
+        if(this.checkCollision(this.p2Harpoon, this.fish03)
+         || this.checkCollision(this.p1Harpoon, this.fish03)) {
+            this.shipExplode(this.fish03);
         }
-        if(this.LtoRcheckCollision(this.p2Rocket, this.ship05) 
-        || this.LtoRcheckCollision(this.p1Rocket, this.ship05)) {
-            this.shipExplode(this.ship05);
-            if(this.p2Rocket.y >= this.ship05.y) {
-                this.p2Rocket.reset();
-            } else {
-                this.p1Rocket.reset();
-            }
+        if(this.checkCollision(this.p2Harpoon, this.fish04)
+         || this.checkCollision(this.p1Harpoon, this.fish04)) {
+            this.shipExplode(this.fish04);
         }
-        if(this.LtoRcheckCollision(this.p2Rocket, this.ship06)
-         || this.LtoRcheckCollision(this.p1Rocket, this.ship06)) {
-            this.shipExplode(this.ship06);
-            if(this.p2Rocket.y >= this.ship06.y) {
-                this.p2Rocket.reset();
-            } else {
-                this.p1Rocket.reset();
-            }
+        if(this.checkCollision(this.p2Harpoon, this.fish05)
+         || this.checkCollision(this.p1Harpoon, this.fish05)) {
+            this.shipExplode(this.fish05);
         }
     }
 
     p1_update() {
-        if(!this.p1Rocket.isFiring) {
-            if(keyA.isDown && this.p1Rocket.x >= borderUISize + this.p1Rocket.width) {
-                this.p1Rocket.x -= this.p1Rocket.moveSpeed;
-            } else if(keyD.isDown && this.p1Rocket.x <= config.width/2 - this.p1Rocket.width) {
-                this.p1Rocket.x += this.p1Rocket.moveSpeed;
+        if(!this.p1Harpoon.isFiring) {
+            if(keyA.isDown && this.p1Harpoon.x >= borderUISize + this.p1Harpoon.width) {
+                this.p1Harpoon.x -= this.p1Harpoon.moveSpeed;
+            } else if(keyD.isDown && this.p1Harpoon.x <= config.width/2 - this.p1Harpoon.width) {
+                this.p1Harpoon.x += this.p1Harpoon.moveSpeed;
             }
         }
         if(Phaser.Input.Keyboard.JustDown(keyW)) {
-            if(this.p1Rocket.isFiring === false){
-                this.p1Rocket.sfxRocket.play();
+            if(this.p1Harpoon.isFiring === false){
+                this.p1Harpoon.sfxRocket.play();
             }
-            this.p1Rocket.isFiring = true;
+            this.p1Harpoon.isFiring = true;
         }
-        if(this.p1Rocket.isFiring && this.p1Rocket.y >= borderUISize * 3 + borderPadding) {
-            this.p1Rocket.y -= this.p1Rocket.moveSpeed;
+        if(this.p1Harpoon.isFiring && this.p1Harpoon.y >= borderUISize * 3 + borderPadding) {
+            this.p1Harpoon.y -= this.p1Harpoon.moveSpeed;
         }
-        if(this.p1Rocket.y <= borderUISize * 3 + borderPadding) {
-            this.p1Rocket.isFiring = false;
-            this.p1Rocket.y = config.height - borderUISize - borderPadding;
+        if(this.p1Harpoon.y <= borderUISize * 3 + borderPadding) {
+            this.p1Harpoon.isFiring = false;
+            this.p1Harpoon.y = config.height - borderUISize - borderPadding;
         }
     }
 
     p2_update() {
-        if(!this.p2Rocket.isFiring) {
-            if(keyLEFT.isDown && this.p2Rocket.x >= config.width/2 + this.p2Rocket.width) {
-                this.p2Rocket.x -= this.p2Rocket.moveSpeed;
-            } else if(keyRIGHT.isDown && this.p2Rocket.x <= config.width - borderUISize - this.p2Rocket.width) {
-                this.p2Rocket.x += this.p2Rocket.moveSpeed;
+        if(!this.p2Harpoon.isFiring) {
+            if(keyLEFT.isDown && this.p2Harpoon.x >= config.width/2 + this.p2Harpoon.width) {
+                this.p2Harpoon.x -= this.p2Harpoon.moveSpeed;
+            } else if(keyRIGHT.isDown && this.p2Harpoon.x <= config.width - borderUISize - this.p2Harpoon.width) {
+                this.p2Harpoon.x += this.p2Harpoon.moveSpeed;
             }
         }
         if(Phaser.Input.Keyboard.JustDown(keyUP)) {
-            if(this.p2Rocket.isFiring === false){
-                this.p2Rocket.sfxRocket.play();
+            if(this.p2Harpoon.isFiring === false){
+                this.p2Harpoon.sfxRocket.play();
             }
-            this.p2Rocket.isFiring = true;
+            this.p2Harpoon.isFiring = true;
         }
-        if(this.p2Rocket.isFiring && this.p2Rocket.y >= borderUISize * 3 + borderPadding) {
-            this.p2Rocket.y -= this.p2Rocket.moveSpeed;
+        if(this.p2Harpoon.isFiring && this.p2Harpoon.y >= borderUISize * 3 + borderPadding) {
+            this.p2Harpoon.y -= this.p2Harpoon.moveSpeed;
         }
-        if(this.p2Rocket.y <= borderUISize * 3 + borderPadding) {
-            this.p2Rocket.isFiring = false;
-            this.p2Rocket.y = config.height - borderUISize - borderPadding;
-        }
-    }
-
-    shipLtoR_update(ship) {
-        ship.x += ship.moveSpeed;
-        if(ship.x >= config.width + ship.width) {
-            ship.x = 0;
+        if(this.p2Harpoon.y <= borderUISize * 3 + borderPadding) {
+            this.p2Harpoon.isFiring = false;
+            this.p2Harpoon.y = config.height - borderUISize - borderPadding;
         }
     }
 
-    shipRtoL_update(ship) {
-        ship.x -= ship.moveSpeed;
-        if(ship.x <= 0 - ship.width) {
-            ship.x = config.width;
-        }
-    }
-
-    RtoLcheckCollision(rocket, ship) {
+    checkCollision(rocket, ship) {
         if(rocket.x < ship.x + ship.width && 
             rocket.x + rocket.width > ship.x && 
             rocket.y < ship.y + ship.height && 
-            rocket.height + rocket.y > ship.y) {
-                if(rocket === this.p2Rocket) {
+            rocket.height/4 + rocket.y > ship.y) {
+                if(rocket === this.p2Harpoon) {
                     this.p2Score += ship.point;
                     this.scoreRight.text = this.p2Score;
                 } else {
                     this.p1Score += ship.point;
                     this.scoreLeft.text = this.p1Score;
                 }
-                return true;
-        } else {
-            return false;
-        }
-    }
-
-    LtoRcheckCollision(rocket, ship) {
-        if(rocket.x > ship.x - ship.width && 
-            rocket.x + rocket.width < ship.x && 
-            rocket.y < ship.y + ship.height && 
-            rocket.height + rocket.y > ship.y) {
-                if(rocket === this.p2Rocket) {
-                    this.p2Score += ship.point;
-                    this.scoreRight.text = this.p2Score;
-                } else {
-                    this.p1Score += ship.point;
-                    this.scoreLeft.text = this.p1Score;
-                }
+                rocket.reset();
                 return true;
         } else {
             return false;
