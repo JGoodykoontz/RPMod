@@ -6,6 +6,7 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_select', './assets/blip_select12.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
         this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
+        this.load.image('menuImage', './assets/menu.png');
     }
     create() {
         let menuConfig = {
@@ -21,16 +22,12 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
 
-        this.add.text(config.width/2, config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5, 0.5);
-        this.add.text(config.width/2, config.height/2, 'Use <--> to move & (F) to fire', menuConfig).setOrigin(0.5, 0.5);
-        menuConfig.backgroundColor = '#00FF00';
-        menuConfig.color = '#000';
-        this.add.text(config.width/2, config.height/2 + borderUISize + borderPadding, 'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5, 0.5);
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        this.background = this.add.tileSprite(0, 0, 640, 480, 'menuImage').setOrigin(0,0);
+
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
     update() {
-        if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+        if(Phaser.Input.Keyboard.JustDown(keySPACE)) {
             game.settings = {
                 spaceshipSpeed: 3,
                 gameTimer: 60000
@@ -38,13 +35,6 @@ class Menu extends Phaser.Scene {
             this.sound.play('sfx_select');
             this.scene.start('play');
         }
-        if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            game.settings = {
-                spaceshipSpeed: 4,
-                gameTimer: 45000
-            }
-            this.sound.play('sfx_select');
-            this.scene.start('play');
-        }
+        
     }
 }

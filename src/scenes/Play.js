@@ -3,32 +3,40 @@ class Play extends Phaser.Scene {
         super("play");
     }
     preload() {
-        this.load.image('rocket', './assets/rocket.png');
-        this.load.image('spaceship', './assets/spaceship.png');
-        this.load.image('starfield', './assets/starfield.png');
+        this.load.image('harpoon', './assets/harpoon.png');
+        this.load.image('fish', './assets/fish.png');
+        this.load.image('fish2', './assets/fish2.png');
+        this.load.image('background1', './assets/underSea_back.png');
+        this.load.image('background2', './assets/underSea_seaweed.png');
+        this.load.image('background3', './assets/underSea_backRock.png');
+        this.load.image('background4', './assets/underSea_foreground.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
     create() {
-        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0,0);
+        this.background1 = this.add.tileSprite(0, 0, 640, 480, 'background1').setOrigin(0,0);
+        this.background2 = this.add.tileSprite(0, 0, 640, 480, 'background2').setOrigin(0,0);
+        this.background3 = this.add.tileSprite(0, 0, 640, 480, 'background3').setOrigin(0,0);
+        this.background4 = this.add.tileSprite(0, 0, 640, 480, 'background4').setOrigin(0,0);
         //this.add.text(320, 240, "play scene").setOrigin(0.5, 0.5);
 
         this.add.rectangle(0, borderUISize + borderPadding, config.width, borderUISize * 2, 0x00ff00).setOrigin(0,0);
 
-        this.add.rectangle(0, 0, config.width, borderUISize, 0xffffff).setOrigin(0,0);
-        this.add.rectangle(0, config.height-borderUISize, config.width, borderUISize, 0xffffff).setOrigin(0,0);
-        this.add.rectangle(0, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
-        this.add.rectangle(config.width-borderUISize, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
+        //this.add.rectangle(0, 0, config.width, borderUISize, 0xffffff).setOrigin(0,0);
+        //this.add.rectangle(0, config.height-borderUISize, config.width, borderUISize, 0xffffff).setOrigin(0,0);
+        //this.add.rectangle(0, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
+        //this.add.rectangle(config.width-borderUISize, 0, borderUISize, config.height, 0xffffff).setOrigin(0,0);
+        //this.add.rectangle(config.width/2, 0, borderPadding, config.height, 0xffffff).setOrigin(0.5, 0);
 
-        this.p1Rocket = new Rocket(this, config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
-        this.p2Rocket = new Rocket(this, 3*config.width/4, config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p1Rocket = new Rocket(this, config.width/4, config.height - borderUISize - borderPadding, 'harpoon').setOrigin(0.5, 0);
+        this.p2Rocket = new Rocket(this, 3*config.width/4, config.height - borderUISize - borderPadding, 'harpoon').setOrigin(0.5, 0);
 
-        this.ship01 = new Spaceship(this, config.width + borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Spaceship(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(0, 0);
-        this.ship03 = new Spaceship(this, config.width, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(0, 0);
+        this.ship01 = new Spaceship(this, config.width + borderUISize * 6, borderUISize * 4, 'fish', 0, 30).setOrigin(0, 0);
+        this.ship02 = new Spaceship(this, config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'fish', 0, 20).setOrigin(0, 0);
+        this.ship03 = new Spaceship(this, config.width, borderUISize * 6 + borderPadding * 4, 'fish', 0, 10).setOrigin(0, 0);
 
-        this.ship04 = new Spaceship(this, 0 - borderUISize * 6, borderUISize * 4, 'spaceship', 0, 30).setOrigin(1, 0);
-        this.ship05 = new Spaceship(this, 0 - borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(1, 0);
-        this.ship06 = new Spaceship(this, 0, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(1, 0);
+        this.ship04 = new Spaceship(this, 0 - borderUISize * 6, borderUISize * 4, 'fish2', 0, 30).setOrigin(1, 0);
+        this.ship05 = new Spaceship(this, 0 - borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'fish2', 0, 20).setOrigin(1, 0);
+        this.ship06 = new Spaceship(this, 0, borderUISize * 6 + borderPadding * 4, 'fish2', 0, 10).setOrigin(1, 0);
         this.ship04.dir = 'LtoR';
         this.ship05.dir = 'LtoR';
         this.ship06.dir = 'LtoR';
@@ -82,7 +90,9 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.starfield.tilePositionX -= 2;
+        this.background2.tilePositionX -= 1;
+        this.background3.tilePositionX -= 2;
+        this.background4.tilePositionX -= 3;
         if(!this.gameOver) {
             this.p1_update();
             this.p2_update();
@@ -105,7 +115,7 @@ class Play extends Phaser.Scene {
         if(this.RtoLcheckCollision(this.p2Rocket, this.ship01)
          || this.RtoLcheckCollision(this.p1Rocket, this.ship01)) {
             this.shipExplode(this.ship01);
-            if(this.p2Rocket.isFiring) {
+            if(this.p2Rocket.y >= this.ship01.y) {
                 this.p2Rocket.reset();
             } else {
                 this.p1Rocket.reset();
@@ -114,7 +124,7 @@ class Play extends Phaser.Scene {
         if(this.RtoLcheckCollision(this.p2Rocket, this.ship02)
          || this.RtoLcheckCollision(this.p1Rocket, this.ship02)) {
             this.shipExplode(this.ship02);
-            if(this.p2Rocket.isFiring) {
+            if(this.p2Rocket.y >= this.ship02.y) {
                 this.p2Rocket.reset();
             } else {
                 this.p1Rocket.reset();
@@ -123,7 +133,7 @@ class Play extends Phaser.Scene {
         if(this.RtoLcheckCollision(this.p2Rocket, this.ship03)
          || this.RtoLcheckCollision(this.p1Rocket, this.ship03)) {
             this.shipExplode(this.ship03);
-            if(this.p2Rocket.isFiring) {
+            if(this.p2Rocket.y >= this.ship03.y) {
                 this.p2Rocket.reset();
             } else {
                 this.p1Rocket.reset();
@@ -132,7 +142,7 @@ class Play extends Phaser.Scene {
         if(this.LtoRcheckCollision(this.p2Rocket, this.ship04)
          || this.LtoRcheckCollision(this.p1Rocket, this.ship04)) {
             this.shipExplode(this.ship04);
-            if(this.p2Rocket.isFiring) {
+            if(this.p2Rocket.y >= this.ship04.y) {
                 this.p2Rocket.reset();
             } else {
                 this.p1Rocket.reset();
@@ -141,7 +151,7 @@ class Play extends Phaser.Scene {
         if(this.LtoRcheckCollision(this.p2Rocket, this.ship05) 
         || this.LtoRcheckCollision(this.p1Rocket, this.ship05)) {
             this.shipExplode(this.ship05);
-            if(this.p2Rocket.isFiring) {
+            if(this.p2Rocket.y >= this.ship05.y) {
                 this.p2Rocket.reset();
             } else {
                 this.p1Rocket.reset();
@@ -150,7 +160,7 @@ class Play extends Phaser.Scene {
         if(this.LtoRcheckCollision(this.p2Rocket, this.ship06)
          || this.LtoRcheckCollision(this.p1Rocket, this.ship06)) {
             this.shipExplode(this.ship06);
-            if(this.p2Rocket.isFiring) {
+            if(this.p2Rocket.y >= this.ship06.y) {
                 this.p2Rocket.reset();
             } else {
                 this.p1Rocket.reset();
