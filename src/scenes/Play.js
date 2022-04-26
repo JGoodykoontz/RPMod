@@ -74,7 +74,7 @@ class Play extends Phaser.Scene {
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             if(this.p1Score > this.p2Score){
-            this.add.text(config.width/2, config.height/2, 'Player 1 Wins!', scoreConfig).setOrigin(0.5);
+            this.add.text(config.width/2, config.height/2, 'Player 2 Loses!', scoreConfig).setOrigin(0.5);
             } else if(this.p2Score > this.p1Score){
                 this.add.text(config.width/2, config.height/2, 'Player 2 Wins!', scoreConfig).setOrigin(0.5);
             } else {
